@@ -1,0 +1,121 @@
+sw = 1024
+sh = 768
+rw = 256
+rh = 224
+
+aspect_ratio_width = tof(sw) * (tof(rh) / tof(rw))
+center_screen = (tof(sw) / 2.0) - (aspect_ratio_width / 2.0)
+
+rl_iw(sw, sh, "Super Bomberman 2")
+rl_iad()
+
+bg_title = rl_lt("assets/bg_title.png")
+char1_title = rl_lt("assets/char1_title.png")
+char2_title = rl_lt("assets/char2_title.png")
+ship_title = rl_lt('assets/ship_title.png')
+text_title = rl_lt('assets/text_title.png')
+press_enter_title = rl_lt('assets/press_enter_title.png')
+title_music = rl_lms('assets/title.mp3')
+char1_title_pos = {"x": 8, "y": -71}
+char2_title_pos = {"x": rw - (46 + 35), "y": rh}
+ship_title_pos  = {"x": (rw / 2) - (112 / 2), "y": -71}
+text_title_pos = {"x": rw, "y": 5}
+press_enter_title_pos = {"x": (rw / 2) - (106 / 2), "y": 150}
+
+render_texture = rl_lrt(rw, rh)
+render_texture_texture = rl_gtfrt(render_texture)
+rtd = rl_gvt(render_texture_texture)
+fltw = tof(rtd["w"])
+flth = tof(rtd["h"])
+
+slide_char = F
+slide_title = F
+title_music_play = F
+
+rl_stf(60)
+
+windowShouldClose = F
+
+wl(windowShouldClose == F)
+
+	if (rl_ikd(R_K_B) | rl_scw())
+		windowShouldClose = T
+	fi
+
+	if (title_music_play)
+		rl_ums(title_music)
+	fi
+
+	rl_bd()
+
+	rl_btm(render_texture)
+	rl_drt(bg_title, 0, 0, R_C_W)
+
+	#draw ship
+	rl_drt(ship_title, ship_title_pos['x'], ship_title_pos['y'], R_C_W)
+
+	if (ship_title_pos['y'] <= 20)
+		val = ship_title_pos['y'] + 1
+		ship_title_pos['y'] = val
+	el
+		slide_char = T
+	fi
+
+	rl_drt(text_title, text_title_pos['x'], text_title_pos['y'], R_C_W)
+	rl_drt(char1_title, char1_title_pos['x'], char1_title_pos['y'], R_C_W)
+	rl_drt(char2_title, char2_title_pos['x'], char2_title_pos['y'], R_C_W)
+
+	if (slide_char)
+		c1tvb = (rh / 2) - (71 / 2)
+
+		if (char1_title_pos['y'] <= c1tvb)
+			val = char1_title_pos['y'] + 10
+			char1_title_pos["y"] = val
+		fi
+
+		if (char2_title_pos['y'] >= 142)
+			val = char2_title_pos['y']
+			val = val - 5
+			char2_title_pos['y'] = val
+		el
+			slide_title = T
+		fi
+
+	fi
+
+	if (slide_title)
+		if (text_title_pos["x"] >= 5)
+			val = text_title_pos["x"]
+			val = val - 5
+			text_title_pos["x"] = val
+		el
+			if (!(title_music_play))
+				title_music_play = T
+				rl_pms(title_music)
+			fi
+		fi
+	fi
+
+	if (title_music_play)
+		rl_drt(press_enter_title, press_enter_title_pos['x'], press_enter_title_pos['y'], R_C_W)
+	fi
+
+	rl_etm()
+
+	rl_cb(R_C_BLK)
+
+	rl_drtp(render_texture_texture, 0.0, 0.0, fltw, (0.0 - flth), center_screen, 0.0, aspect_ratio_width, tof(sh), 0.0, 0.0, 0.0, R_C_W)
+
+	rl_ed()
+lw
+
+rl_urt(render_texture)
+rl_ut(bg_title)
+rl_ut(char1_title)
+rl_ut(char2_title)
+rl_ut(text_title)
+rl_ut(ship_title)
+rl_unms(title_music)
+
+rl_cw()
+ex(0)
